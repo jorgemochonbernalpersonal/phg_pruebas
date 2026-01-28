@@ -10,7 +10,7 @@ class HealthTest extends TestCase
 {
     public function test_api_responds_ok(): void
     {
-        $base = 'http://localhost/api-rest'; 
+        $base = getenv('BASE_URL') ?: 'http://localhost:8000';
         $response = @file_get_contents($base . '/');
         if ($response === false) {
             $this->markTestSkipped('Servidor no disponible en ' . $base);
