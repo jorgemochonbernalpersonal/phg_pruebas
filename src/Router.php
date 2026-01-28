@@ -11,9 +11,8 @@ class Router
     public function dispatch(): void
     {
         $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-        $uri = $_SERVER['REQUEST_URI'] ?? '/';
-        $uri = parse_url($uri, PHP_URL_PATH);
-        $uri = rtrim($uri, '/') ?: '/';
+        $uri = \parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+        $uri = \rtrim($uri, '/') ?: '/';
 
         foreach ($this->routes as $route) {
             [$routeMethod, $routePath, $handler] = $route;
@@ -31,28 +30,33 @@ class Router
 
     private function json(array $data, int $code = 200): void
     {
-        header('Content-Type: application/json');
-        http_response_code($code);
-        echo json_encode($data);
+        \header('Content-Type: application/json');
+        \http_response_code($code);
+        echo \json_encode($data);
+    }
+
+    private function addRoute(string $method, string $path, callable $handler): void
+    {
+        $this->routes[] = [$method, $path, $handler];
     }
 
     public function get(string $path, callable $handler): void
     {
-        $this->routes[] = ['GET', $path, $handler];
+        $this->addRoute('GET', $path, $handler);
     }
-    
+
     public function post(string $path, callable $handler): void
     {
-        $this->routes[] = ['POST', $path, $handler];
+        $this->addRoute('POST', $path, $handler);
     }
 
     public function put(string $path, callable $handler): void
     {
-        $this->routes[] = ['PUT', $path, $handler];
+        $this->addRoute('PUT', $path, $handler);
     }
 
     public function delete(string $path, callable $handler): void
     {
-        $this->routes[] = ['DELETE', $path, $handler];
+        $this->addRoute('DELETE', $path, $handler);
     }
 }
