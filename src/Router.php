@@ -19,7 +19,7 @@ class Router
             [$routeMethod, $routePath, $handler] = $route;
             if ($routeMethod === $method && $routePath === $uri) {
                 $result = $handler();
-                if (is_array($result)) {
+                if (\is_array($result)) {
                     $this->json($result, 200);
                 }
                 return;
@@ -44,5 +44,15 @@ class Router
     public function post(string $path, callable $handler): void
     {
         $this->routes[] = ['POST', $path, $handler];
+    }
+
+    public function put(string $path, callable $handler): void
+    {
+        $this->routes[] = ['PUT', $path, $handler];
+    }
+
+    public function delete(string $path, callable $handler): void
+    {
+        $this->routes[] = ['DELETE', $path, $handler];
     }
 }
