@@ -1,0 +1,15 @@
+/vendor/
+.phpunit.result.cache
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
