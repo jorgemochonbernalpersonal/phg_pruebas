@@ -16,10 +16,32 @@ class Router
 
         foreach ($this->routes as $route) {
             [$routeMethod, $routePath, $handler] = $route;
-            if ($routeMethod === $method && $routePath === $uri) {
+            if ($routeMethod !== $method) {
+                continue;
+            }
+
+            if (\str_contains($routePath, '{')) {
+                $pattern = '#^' . \preg_quote($routePath, '#') . '$#';
+                $pattern = \preg_replace('#\\\\\{[^}]+\\\\\}#', '([^/]+)', $pattern);
+                if (\preg_match($pattern, $uri, $matches) === 1) {
+                    $params = \array_slice($matches, 1);
+                    $result = $handler(...$params);
+                    if (\is_array($result)) {
+                        $code = (int) ($result['code'] ?? 200);
+                        unset($result['code']);
+                        $this->json($result, $code);
+                    }
+                    return;
+                }
+                continue;
+            }
+
+            if ($routePath === $uri) {
                 $result = $handler();
                 if (\is_array($result)) {
-                    $this->json($result, 200);
+                    $code = (int) ($result['code'] ?? 200);
+                    unset($result['code']);
+                    $this->json($result, $code);
                 }
                 return;
             }

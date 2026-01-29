@@ -13,6 +13,7 @@ if (class_exists('Dotenv\Dotenv')) {
 $routerClass = 'App\\Router';
 $router = new $routerClass();
 
-$router->get('/', fn (): array => ['status' => 'ok', 'message' => 'API running']);
+require __DIR__ . '/src/routes.php';
+registerRoutes($router);
 
 return $router;
